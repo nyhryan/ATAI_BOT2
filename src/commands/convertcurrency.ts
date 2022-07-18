@@ -58,40 +58,53 @@ module.exports = {
 
         const requestURL = `https://api.exchangerate.host/convert?from=${fromCurrency}&to=${toCurrency}`;
 
-        const axiosGet = axios
-            .get(requestURL)
-            .then((res: any | undefined) => {
-                const rate: number = res.data.info.rate;
+        // const axiosGet = axios
+        //     .get(requestURL)
+        //     .then((res: any | undefined) => {
+        //         const rate: number = res.data.info.rate;
+        //         const returnCurrency = Math.round(amount * rate * 100) / 100;
+        //         // const returnCurrency = amount * rate;
+        //         // const roundUSD = Math.round(USD * 100) / 100;
+
+        //         return returnCurrency;
+        //     })
+        //     .catch((err: Error) => {
+        //         console.error(err);
+        //     });
+
+        // const convertedAmount: number = await axiosGet;
+
+        const axiosGet = async () => {
+            try {
+                const response = await axios.get(requestURL);
+                const rate: number = response.data.info.rate;
                 const returnCurrency = Math.round(amount * rate * 100) / 100;
-                // const returnCurrency = amount * rate;
-                // const roundUSD = Math.round(USD * 100) / 100;
 
                 return returnCurrency;
-            })
-            .catch((err: Error) => {
-                console.error(err);
-            });
 
-        const convertedAmount: number = await axiosGet;
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        const convertedAmount = await axiosGet() ?? 1;
 
         const fromAmount = amount.toLocaleString('en-US');
         const toAmount = convertedAmount.toLocaleString('en-US');
 
-        const embedMessage = new MessageEmbed()
-            .setColor('#00FFFF')
-            .addFields(
-                {
-                    name: `${fromDesc}`,
-                    value: `${fromCurrency} ${fromAmount}`,
-                    inline: true,
-                },
-                { name: '➡', value: '\u200B', inline: true },
-                {
-                    name: `${toDesc}`,
-                    value: `${toCurrency} ${toAmount}`,
-                    inline: true,
-                }
-            );
+        const embedMessage = new MessageEmbed().setColor('#00FFFF').addFields(
+            {
+                name: `${fromDesc}`,
+                value: `${fromCurrency} ${fromAmount}`,
+                inline: true,
+            },
+            { name: '➡', value: '\u200B', inline: true },
+            {
+                name: `${toDesc}`,
+                value: `${toCurrency} ${toAmount}`,
+                inline: true,
+            }
+        );
         await interaction.reply({
             embeds: [embedMessage],
         });
