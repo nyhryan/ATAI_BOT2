@@ -1,3 +1,9 @@
 node_modules
 
 .env
+
+.prettierrc.json
+
+.eslintrc.json
+
+test.ts

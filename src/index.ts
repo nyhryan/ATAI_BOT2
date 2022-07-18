@@ -1,7 +1,7 @@
 import { Client, Collection, Intents } from 'discord.js';
 
 class extClient extends Client {
-    public commands?: Collection<unknown, any>;
+    public commands!: Collection<unknown, any>;
 }
 
 import fs = require('node:fs');
@@ -43,16 +43,10 @@ for (const file of eventFiles) {
 	}
 }
 
-// client.once('ready', (c) => {
-//     console.log(`Ready! Logged in as ${c.user.tag}`);
-// });
-
 client.on('interactionCreate', async interaction => {
-        if (!interaction.isCommand()) return;
-
-    // console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`)
-
-    const command = client.commands!.get(interaction.commandName);
+    if (!interaction.isCommand()) return;
+    
+    const command = client.commands.get(interaction.commandName);
 
     if (!command) return;
 
@@ -63,7 +57,6 @@ client.on('interactionCreate', async interaction => {
         console.error(err);
         await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
-
 
 });
 
